@@ -6,9 +6,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Goudy+Bookletter+1911" rel="stylesheet">
 </head>
 
 <body>
+    <div id="start">
+        <button id="startButton" class="startButton" type="button">Start Game</button>
+    </div>
+
+    <div id="entireGame" class="invisibleGame">
+        <div id="allBtns">
+            <button id="attackButton" type="button">Attack</button>
+            <button id="healButton" type="button">Heal</button>
+            <button id="forfeitButton" type="button">Forfiet</button>
+        </div>
+        <div id="statusLineDiv">
+            <h3 id="gameStatusLine"></h3>
+        </div>
+        <div id="stats">
+            <h3>Player Stats</h3>
+            <div id="playerStats">
+                <div class="pStatsFlex">
+                    <p>Name:</p>
+                    <div>
+                        <p id="playerName"></p>
+                    </div>
+                </div>
+                <div class="pStatsFlex">
+                    <p>Health:</p>
+                    <progress id="playerHealth" value="40" max="60"></progress>
+                </div>
+                <div class="pStatsFlex">
+                    <p>Heal Count:</p>
+                    <progress id="playerHealCount" value="0" max="2"></progress>
+                </div>
+                <div class="pStatsFlex">
+                    <p>Wins:</p>
+                    <progress id="playerWins" value="0" max="5"></progress>
+                </div>
+            </div>
+
+            <h3>Enemy Stats</h3>
+            <div id="computerStats">
+                <div class="eStatsFlex">
+                    <p>Name:</p>
+                    <p id="computerName"></p>
+                </div>
+                <div class="cStatsFlex">
+                    <p>Health:</p>
+                    <progress id="computerHealth" value="10" max="10"></progress>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
     <script src="script.js"></script>
 </body>
 

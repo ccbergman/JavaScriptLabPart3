@@ -1,8 +1,13 @@
-startGame();
+var startBtn = document.getElementById("startButton");
+var everything = document.getElementById("entireGame");
+
+startBtn.onclick = function () {
+    startBtn.style.display = "none";
+    everything.className = "visibleGame";
+    startGame();
+}
 
 function startGame() {
-    var game = prompt("Do you want to play?");
-
     var usr = {
         name: "",
         health: 40,
@@ -22,56 +27,50 @@ function startGame() {
         health: 10,
         lives: 5
     }
+
     computer.attack = function () {
         this.health -= Math.floor(Math.random() * 3) + 1;
     }
 
-    if (game.toLowerCase() === "yes") {
-        usr.name = prompt("What's your name?");
-
-        var continueGame = true;
-        do {
-            var choice = prompt("Would you like to attack, heal (limit 2), or forfeit?");
-            if (choice.toLowerCase() === "attack") {
-                attack(usr, computer);
-            } else if (choice.toLowerCase() === "heal") {
-                if (usr.healCount < 2) {
-                    regenerate(usr);
-                } else {
-                    console.log("You're out of healing power!")
-                }
-            } else if (choice.toLowerCase() === "forfeit") {
-                continueGame = false;
-                break;
-            }
-            console.log(computer.name + " has " + computer.health + " health left.");
-            console.log(usr.name + " has " + usr.health + " health left.");
-
-            continueGame = checkWinLose(usr, computer);
-
-        } while (continueGame);
-
-        console.log("Game Over!");
-        console.log(usr.name + " has " + usr.wins + " wins.");
-        console.log(computer.name + " has " + computer.lives + " lives left.");
-        if (usr.wins === 5 && computer.lives <= 0) {
-            console.log(usr.name + " wins!");
-        } else {
-            console.log(computer.name + " wins!");
-        }
-
-    } else {
-        console.log("Ok...maybe next time.");
+    var attackBtn = document.getElementById("attackButton");
+    attackBtn.onclick = function () {
+        attack(usr, computer);
     }
+
+    var healBtn = document.getElementById("healButton");
+    healBtn.onclick = function () {
+        regenerate(usr, computer);
+    }
+
+    var forfeitBtn = document.getElementById("forfeitButton");
+    forfeitBtn.onclick = function () {
+        document.getElementById("gameStatusLine").innerHTML = "You quit, therefore you lose!";
+        forfeit();
+    }
+
+    usr.name = prompt("What's your name?");
+    document.getElementById("playerName").innerHTML = usr.name;
+    document.getElementById("computerName").innerHTML = computer.name;
+
+    var statusUpdates = usr.name + " has " + usr.health + " health left. "
+        + computer.name + " has " + computer.health + " health left.";
+    document.getElementById("gameStatusLine").innerHTML = statusUpdates;
 }
 
 function attack(combatUsr, combatComputer) {
     combatUsr.attack();
     combatComputer.attack();
+    updateProgress(combatUsr, combatComputer);
+    checkWinLose(combatUsr, combatComputer);
 }
 
-function regenerate(healUsr) {
+function regenerate(healUsr, healComputer) {
     healUsr.heal();
+    updateProgress(healUsr, healComputer);
+    checkWinLose(healUsr, healComputer);
+    if (healUsr.healCount === 2) {
+        document.getElementById("healButton").setAttribute("disabled", true);
+    }
 }
 
 function checkWinLose(cwlUsr, cwlComputer) {
@@ -79,12 +78,28 @@ function checkWinLose(cwlUsr, cwlComputer) {
         cwlComputer.health = 10;
         cwlComputer.lives--;
         cwlUsr.wins++;
-        console.log("DING! DING! DING!");
     }
     if (cwlComputer.lives === 0) {
-        return false;
+        document.getElementById("gameStatusLine").innerHTML = cwlComputer.name + " is out of lives! " + cwlUsr.name + " wins!";
+        forfeit();
     } else if (cwlUsr.health < 1) {
-        return false;
+        document.getElementById("gameStatusLine").innerHTML = cwlUsr.name + " is out of health! " + cwlComputer.name + " wins!";
+        forfeit();
     }
-    return true;
+}
+
+function updateProgress(progUsr, progComputer) {
+    document.getElementById("playerHealth").value = progUsr.health;
+    document.getElementById("playerHealCount").value = progUsr.healCount;
+    document.getElementById("playerWins").value = progUsr.wins;
+    document.getElementById("computerHealth").value = progComputer.health;
+    var statusUpdates = progUsr.name + " has " + progUsr.health + " health left. "
+        + progComputer.name + " has " + progComputer.health + " health left.";
+    document.getElementById("gameStatusLine").innerHTML = statusUpdates;
+}
+
+function forfeit() {
+    document.getElementById("attackButton").setAttribute("disabled", true);
+    document.getElementById("healButton").setAttribute("disabled", true);
+    document.getElementById("forfeitButton").setAttribute("disabled", true);
 }
